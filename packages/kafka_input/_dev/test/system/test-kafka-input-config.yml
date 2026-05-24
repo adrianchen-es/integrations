@@ -1,0 +1,10 @@
+service: kafka-input-svc
+input: kafka
+vars:
+  topics:
+    - testTopicInput
+  hosts:
+    - "{{Hostname}}:{{Port}}"
+  group_id: system_test_kafka_input
+  "data_stream.dataset": kafka_input.generic
+  "data_stream.type": "logs"

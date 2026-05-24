@@ -1,0 +1,6 @@
+# newer versions go on top
+- version: "0.0.1"
+  changes:
+    - description: Initial release of the Custom Kafka Input package (Fleet input package using the Filebeat Kafka input).
+      type: enhancement
+      link: https://github.com/elastic/integrations/pull/18266

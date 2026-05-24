@@ -1,0 +1,16 @@
+# Consumes JSON metric-shaped lines (same shape as kafka_log metrics samples).
+# Events are still logs-type (Fleet Kafka input); there is no package ingest pipeline,
+# so fields stay in `message` unless the user attaches a pipeline in the policy.
+service: kafka-input-svc
+input: kafka
+wait_for_data_timeout: 1m
+assert:
+  min_count: 2
+vars:
+  data_stream.type: "metrics"
+  data_stream.dataset: kafka_input.metrics
+  topics:
+    - testTopicMetricsInput
+  hosts:
+    - "{{Hostname}}:{{Port}}"
+  group_id: system_test_kafka_input_metrics

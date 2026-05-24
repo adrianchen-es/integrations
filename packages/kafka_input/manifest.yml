@@ -1,10 +1,34 @@
-title: Custom Kafka Logs
-type: logs
-streams:
-  - input: kafka
-    description: Collect data from Kafka topic with Elastic Agent.
-    title: Custom Kafka Logs
-    template_path: kafka.yml.hbs
+format_version: 3.1.5
+name: kafka_input
+title: "Custom Kafka Input Package"
+version: 0.0.1
+source:
+  license: "Elastic-2.0"
+description: >-
+  Custom Kafka Input Package — read from Kafka topics using the Filebeat Kafka input
+  (same layout as the Custom WMI Input Package: standalone input package with Fleet policy template).
+type: input
+categories:
+  - observability
+  - custom
+conditions:
+  kibana:
+    version: "^9.4.0"
+  elastic:
+    subscription: "basic"
+screenshots: []
+icons:
+  - src: /img/logo_kafka.svg
+    title: Kafka logo
+    size: 32x32
+    type: image/svg+xml
+policy_templates:
+  - name: kafka_input
+    type: logs
+    title: Custom Kafka Input
+    description: Collect events from Kafka topics with Elastic Agent.
+    input: kafka
+    template_path: input.yml.hbs
     vars:
       - name: hosts
         type: text
@@ -27,9 +51,17 @@ streams:
         title: Dataset name
         description: |
           Dataset to write data to. Changing the dataset will send the data to a different index. You can't use `-` in the name of a dataset and only valid characters for [Elasticsearch index names](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html).
-        default: kafka_log.generic
+        default: kafka_input.generic
         required: true
         show_user: true
+      - name: data_stream.type
+        type: text
+        title: Data stream type
+        description: |
+          Elasticsearch data stream type for routed documents (for example `logs` or `metrics`). Defaults to `logs`.
+        default: logs
+        required: false
+        show_user: false
       - name: pipeline
         type: text
         title: Ingest Pipeline
@@ -194,7 +226,7 @@ streams:
         show_user: false
       - name: isolation_level
         type: text
-        title: Wait Close
+        title: Isolation Level
         description: This configures the Kafka group isolation level, supports the values "read_uncommitted" which returns all messages in the message channel and "read_committed" which hides messages that are part of an aborted transaction. The default is "read_uncommitted".
         required: false
         show_user: false
@@ -258,7 +290,7 @@ streams:
         required: false
         show_user: false
         description: |
-          Processors are used to reduce the number of fields in the exported event or to enhance the event with metadata. This executes in the agent before the logs are parsed. See [Processors](https://www.elastic.co/guide/en/beats/filebeat/current/filtering-and-enhancing-data.html) for details.
+          Processors are used to reduce the number of fields in the exported event or to enhance the event with metadata. This executes in the agent before the logs are parsed. See [Processors](https://www.elastic.co/guide/en/fleet/current/elastic-agent-processor-configuration.html) for details.
       - name: tags
         type: text
         title: Tags
@@ -268,7 +300,6 @@ streams:
           - forwarded
         multi: true
         show_user: true
-# Ensures agents have permissions to write data to `logs-*-*`
-elasticsearch:
-  dynamic_dataset: true
-  dynamic_namespace: true
+owner:
+  github: elastic/obs-infraobs-integrations
+  type: elastic
