@@ -1,0 +1,6 @@
+input: synthetics/browser
+data_stream:
+  vars:
+    enabled: true
+    type: browser
+    tls_details: true
